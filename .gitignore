@@ -1,0 +1,13 @@
+*~
+*.so
+*.swp
+*.swo
+
+CMakeCache.txt
+CMakeFiles/
+*.cmake
+Makefile
+build/
+bin/
+lib/
+externals/
