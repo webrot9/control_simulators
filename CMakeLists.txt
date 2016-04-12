@@ -15,9 +15,9 @@ cmake_minimum_required(VERSION 2.7)
 project(control_simulators)
 
 # Set the default path for built executables to the "bin" directory.
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 # Set the default path for built libraries to the "lib" directory.
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
@@ -38,7 +38,6 @@ ExternalProject_Add(boost_numpy_external
 
 ExternalProject_Add(boost_numpy_eigen_external
     GIT_REPOSITORY https://github.com/personalrobotics/Boost.NumPy_Eigen.git
-    GIT_TAG bugfix/cmake
     PREFIX ${EXTERNALS_DIR}
     INSTALL_DIR ${EXTERNALS_DIR}
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNALS_DIR}
