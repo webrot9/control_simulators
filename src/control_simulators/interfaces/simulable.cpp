@@ -4,8 +4,6 @@
 #include <stdexcept>
 
 int Simulable::simulable_counter_ = 0;
-//double Simulable::integration_frequency_ = 0.1;
-//double Simulable::min_integration_dt_ = 1e-4;
 
 namespace {
   static const double RK4_INTEGRATION_CONSTANT = 1.0/6.0;
@@ -46,8 +44,7 @@ ConsistentVector Simulable::transition(double& time, double dt,
   checkStateSize(state);
   checkControlSize(control);
   ConsistentVector result;
-  double t0 = time;
-
+  
   // integration dt to be considered based on passed in dt
   double integration_dt = dt*integration_frequency_; 
   int num_steps = static_cast<int>(std::ceil(dt/integration_dt));
@@ -64,8 +61,6 @@ ConsistentVector Simulable::transition(double& time, double dt,
   for (int i = 0; i < num_steps; ++i) {
     result = rk4(time, integration_dt, result, control);
   }
-
-  assert(fabs(time - (t0 + dt)) < 1e-10);
 
   return result;
 }
