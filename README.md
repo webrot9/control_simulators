@@ -15,7 +15,7 @@ cd control_simulators
 mkdir build
 cd build
 cmake ..
-make -j
+make -j8
 ```
 If your machine is RAM limited, you should make with a lower `-j` value as there is Boost usage to create the Python bindings.
 
@@ -54,7 +54,7 @@ To use this elsewhere, you likely will have to set the `PYTHONPATH` variable in 
 On a bash shell, this will be similar to: 
 <br>&emsp;`export PYTHONPATH+=[path_to_control_simulators]/build/lib`
 <br>If you are already in the build `lib` directory, this can be accomplished by:
-<br>&emsp;```export PYTHONPATH+=`pwd````
+<br>&emsp;``export PYTHONPATH+=`pwd```
 
 
 ## Notes
@@ -69,5 +69,5 @@ It should theoretically be possible to make it work on OS X, but we have been un
 
 File any issues on Github (https://github.com/webrot9/control_simulators/issues). 
 You are welcome to also submit pull requests with additional simulator models or other upgrades. 
-Note that your models must support licensing that will inherit whatever licensing we (Robert Capobiano and Arun Venkatraman) choose (and may modify in the future) for this repository.
+Note that your models must support licensing that will inherit whatever licensing we (Robert Capobianco and Arun Venkatraman) choose (and may modify in the future) for this repository.
 
