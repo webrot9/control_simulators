@@ -17,6 +17,7 @@ void Simulable::reset(const ConsistentVector& state) {
   state_ = state;
   // reallocation guaranteed
   std::vector<ConsistentVector>().swap(all_states_);
+  std::vector<ConsistentVector>().swap(all_controls_);
   all_states_.push_back(state_);
 }
 
