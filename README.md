@@ -69,5 +69,5 @@ It should theoretically be possible to make it work on OS X, but we have been un
 
 File any issues on Github (https://github.com/webrot9/control_simulators/issues). 
 You are welcome to also submit pull requests with additional simulator models or other upgrades. 
-Note that your models must support licensing that will inherit whatever licensing we (Robert Capobianco and Arun Venkatraman) choose (and may modify in the future) for this repository.
+Note that your models must support licensing that will inherit whatever licensing we (Roberto Capobianco and Arun Venkatraman) choose (and may modify in the future) for this repository.
 
