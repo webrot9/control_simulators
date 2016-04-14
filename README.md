@@ -17,10 +17,10 @@ cd build
 cmake ..
 make -j8
 ```
-If your machine is RAM limited, you should make with a lower `-j` value as there is Boost usage to create the Python bindings.
+If your machine is RAM limited, you should make with a lower `-j` value as there is template compilation due to Boost iin creating the Python bindings.
 
 ## Example usage
-One can use this library for the C++ API or the Python API. 
+One can use this library with the C++ API or the Python API. 
 
 ### Python API
 Here's an example usage of the Python API. We first go to the `build/lib` directory
@@ -52,9 +52,9 @@ system['damping'] = 0.1
 To use this elsewhere, you likely will have to set the `PYTHONPATH` variable in your shell environment. 
 
 On a bash shell, this will be similar to: 
-<br>&emsp;`export PYTHONPATH+=[path_to_control_simulators]/build/lib`
-<br>If you are already in the build `lib` directory, this can be accomplished by:
-<br>&emsp;``export PYTHONPATH+=`pwd```
+<br>&emsp;`export PYTHONPATH+=:[path_to_control_simulators]/build/lib`
+<br>If you are already in the `build/lib` directory, this can be accomplished by:
+<br>&emsp;``export PYTHONPATH+=:`pwd````
 
 
 ## Notes
