@@ -32,8 +32,8 @@ class Simulable {
 				      const ConsistentVector& control) const;
 
   // setters and getters for Gaussian noise 
-  const Eigen::MatrixXd& getNoiseCovariance() const { gaussian_noise_.getCovariance(); } 
-  const Eigen::VectorXd& getNoiseMean() const { gaussian_noise_.getMean(); } 
+  const Eigen::MatrixXd& getNoiseCovariance() const { return gaussian_noise_.getCovariance(); } 
+  const Eigen::VectorXd& getNoiseMean() const { return gaussian_noise_.getMean(); } 
   void setNoiseMean(const Eigen::VectorXd& mean) { gaussian_noise_.setMean(mean); } 
   void setNoiseCovariance(const Eigen::MatrixXd& covariance) { gaussian_noise_.setCovariance(covariance); } 
   
@@ -94,13 +94,13 @@ class Simulable {
   std::vector<double> param_;
   std::map<std::string, int> param_names_ = {};
 
-  MultivariateGaussian<double> gaussian_noise_;
-
   int id_;
   double time_;
   ConsistentVector state_;
   std::vector<ConsistentVector> all_states_;
   std::vector<ConsistentVector> all_controls_;
+
+  MultivariateGaussian<double> gaussian_noise_;
 };
 
 #endif

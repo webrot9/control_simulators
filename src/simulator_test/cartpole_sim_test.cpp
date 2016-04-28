@@ -47,8 +47,8 @@ int main(int argc, char* argv[]) {
 
   std::vector<ConsistentVector> states = cp.allStates();
 
-  for (int i = 0; i < states.size(); ++i) {
-    file << states[i].transpose() << std::endl;
+  for (const auto &state : states) {
+    file << state.transpose() << std::endl;
   }
 
   file.close();
@@ -72,8 +72,8 @@ int main(int argc, char* argv[]) {
 
   states = cp1.allStates();
   
-  for (int i = 0; i < states.size(); ++i) {
-    file << states[i].transpose() << std::endl;
+  for (const auto &state : states) {
+    file << state.transpose() << std::endl;
   }
 
   file.close();
@@ -94,8 +94,8 @@ int main(int argc, char* argv[]) {
 
   states = cp1.allStates();
 
-  for (int i = 0; i < states.size(); ++i) {
-    file << states[i].transpose() << std::endl;
+  for (const auto &state : states) {
+    file << state.transpose() << std::endl;
   }
 
   file.close();

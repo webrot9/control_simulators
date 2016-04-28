@@ -31,18 +31,18 @@ ConsistentVector Bicycle::dynamics(double time,
 
     // These below could be cached
     const double Mc = param_[M_C]; const double Md = param_[M_D]; const double Mp = param_[M_P];
-    const double L = param_[L]; const double Lsq = L*L;
-    const double C = param_[C];
+    const double L = param_[Bicycle::L]; const double Lsq = L*L;
+    const double C = param_[Bicycle::C];
     const double Lc = L-C;
     const double Dcm = param_[D_CM];
-    const double H = param_[H]; const double Hsq = H * H;
-    const double R = param_[R]; const double Rsq = R * R;
+    const double H = param_[Bicycle::H]; const double Hsq = H * H;
+    const double R = param_[Bicycle::R]; const double Rsq = R * R;
     const double M = Mc + Md; // cycle + tire mass
     const double Idc = Md * Rsq;
     const double Idv = 1.5 * Idc;
     const double Idl = 0.5 * Idc;
     const double Itot = inertial_ratio * Mc * Hsq  + Mp * (H + Dcm) * (H + Dcm);
-    const double V = param_[V]; const double Vsq = V*V;
+    const double V = param_[Bicycle::V]; const double Vsq = V*V;
     const double sigmadot = V/R;
 
     // extract parts of the control

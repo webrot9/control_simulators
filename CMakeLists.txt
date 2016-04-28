@@ -120,7 +120,7 @@ else (LINUX_BITNESS STREQUAL "32-BIT")
 endif (LINUX_BITNESS STREQUAL "32-BIT")
 
 set(ControlSim_CXX_FLAGS "${ControlSim_CXX_FLAGS} -std=c++0x")
-set(CMAKE_CXX_FLAGS "${ControlSim_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${ControlSim_CXX_FLAGS} -Wall")
 
 #########################################################
 
