@@ -34,8 +34,20 @@ class Simulable {
   // setters and getters for Gaussian noise 
   const Eigen::MatrixXd& getNoiseCovariance() const { return gaussian_noise_.getCovariance(); } 
   const Eigen::VectorXd& getNoiseMean() const { return gaussian_noise_.getMean(); } 
-  void setNoiseMean(const Eigen::VectorXd& mean) { gaussian_noise_.setMean(mean); } 
-  void setNoiseCovariance(const Eigen::MatrixXd& covariance) { gaussian_noise_.setCovariance(covariance); } 
+  void setNoiseMean(const Eigen::VectorXd& mean) { 
+    if(mean.size() != stateSize()) {
+      throw std::runtime_error("Noise mean size not consistent.");
+    }
+
+    gaussian_noise_.setMean(mean);
+  } 
+  void setNoiseCovariance(const Eigen::MatrixXd& covariance) {
+    if(covariance.rows() != covariance.cols() || covariance.rows() != stateSize()) {
+      throw std::runtime_error("Noise covariance size not consistent.");
+    }
+
+    gaussian_noise_.setCovariance(covariance);
+  }
   
   // setters and getters for state, time, controls
   int id() const { return id_; }
@@ -50,7 +62,7 @@ class Simulable {
   }
   virtual int controlSize() const { 
     throw std::logic_error("Control size not defined for Simulable class."); 
-    return 0; 
+    return 1; 
   };
 
   // Get and set parameters of the system using size_t indexing into parameters array (length of

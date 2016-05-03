@@ -84,13 +84,13 @@ ConsistentVector Simulable::rk4(double& time, double dt,
 
 void Simulable::checkStateSize(const ConsistentVector& state) const {
   if (state.size() != stateSize()) {
-    throw std::runtime_error("State size must correspond!");
+    throw std::runtime_error("State size must correspond.");
   }
 }
 
 void Simulable::checkControlSize(const ConsistentVector &control) const {
   if (control.size() != controlSize()) {
-    throw std::runtime_error("Control size must correspond!");
+    throw std::runtime_error("Control size must correspond.");
   }
 }
 
