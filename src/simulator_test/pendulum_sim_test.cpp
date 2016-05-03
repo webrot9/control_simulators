@@ -21,6 +21,9 @@ int main(int argc, char* argv[]) {
   p.setParam(Pendulum::DAMPING_COEFF, 0.3);
 
   const Eigen::MatrixXd cov(1e-2*Eigen::MatrixXd::Identity(p.stateSize(), p.stateSize()));
+  ConsistentVector mean(2);
+  mean.setZero();
+  p.setNoiseMean(mean);
   p.setNoiseCovariance(cov);
 
   Pendulum p1(init_state);
