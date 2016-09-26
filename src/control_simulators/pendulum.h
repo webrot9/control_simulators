@@ -7,8 +7,8 @@
 #include <control_simulators/interfaces/simulable.h>
 
 
-// Cartpole state is: angle, angular velocity;
-// for the angle, PI is straigth up, 0 is straigth down
+// Pendulum state is: angle, angular velocity;
+// for the angle, PI is straight up, 0 is straight down
 class Pendulum : public Simulable {
  public:
   enum ParamIndex {

@@ -3,6 +3,11 @@
 
 #include <control_simulators/interfaces/simulable.h>
 
+// Double Pendulum State contains the following:
+//  0,theta1
+//  1,theta1dot
+//  2,theta2
+//  3,theta2dot
 class DoublePendulum : public Simulable {
  public:
   enum ParamIndex {
