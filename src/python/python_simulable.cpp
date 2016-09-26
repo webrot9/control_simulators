@@ -37,6 +37,14 @@ template<class T> struct VectorToPyList {
     }
 };
 
+// Helper function for returning an integer. Used to define static methods for the 
+// control dim and state dim for the systems. It is up the user to make sure the numbers
+// returned match those from control_size() and state_size(), which are not static methods. 
+template<int N> int return_n()
+{
+    return N;
+}
+
 BOOST_PYTHON_MODULE(python_simulable)
 {
     np::initialize();
@@ -72,9 +80,29 @@ BOOST_PYTHON_MODULE(python_simulable)
         .def("params", &Simulable::paramNames)
         ;
 
-    bp::class_<Pendulum, bp::bases<Simulable>>("Pendulum", bp::init<Eigen::VectorXd>());
-    bp::class_<DoublePendulum, bp::bases<Simulable>>("DoublePendulum", bp::init<Eigen::VectorXd>());
-    bp::class_<Cartpole, bp::bases<Simulable>>("Cartpole", bp::init<Eigen::VectorXd>());
-    bp::class_<Bicycle, bp::bases<Simulable>>("Bicycle", bp::init<Eigen::VectorXd>());
+    //
+    // Define classes for each dynamical system.
+    //
+
+    bp::class_<Pendulum, bp::bases<Simulable>>("Pendulum", bp::init<Eigen::VectorXd>())
+        .def("state_dim", &return_n<2>)
+        .staticmethod("state_dim")
+        .def("control_dim", &return_n<1>)
+        .staticmethod("control_dim")
+        ;
+
+    bp::class_<DoublePendulum, bp::bases<Simulable>>("DoublePendulum", bp::init<Eigen::VectorXd>())
+        .def("state_dim", &return_n<4>)
+        .staticmethod("state_dim")
+        .def("control_dim", &return_n<1>)
+        .staticmethod("control_dim")
+        ;
+
+    bp::class_<Cartpole, bp::bases<Simulable>>("Cartpole", bp::init<Eigen::VectorXd>())
+        .def("state_dim", &return_n<4>)
+        .staticmethod("state_dim")
+        .def("control_dim", &return_n<1>)
+        .staticmethod("control_dim")
+        ;
 
 };

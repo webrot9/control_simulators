@@ -7,7 +7,7 @@
 #include <control_simulators/interfaces/simulable.h>
 
 // Cartpole state is: position, velocity, angle, angular velocity;
-// for the angle, 0 is straigth up, PI is straigth down
+// for the angle, 0 is straight up, PI is straight down
 class Cartpole : public Simulable {
  public:
   enum CartpoleParamType {
