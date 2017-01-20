@@ -29,11 +29,17 @@ set(EXTERNALS_DIR ${PROJECT_SOURCE_DIR}/externals)
 
 include(ExternalProject)
 
+find_package(PythonLibs 2.7 REQUIRED)
+find_package(PythonInterp 2.7 REQUIRED)
+
 ExternalProject_Add(boost_numpy_external
     GIT_REPOSITORY https://github.com/personalrobotics/Boost.NumPy
     PREFIX ${PROJECT_SOURCE_DIR}/externals
     INSTALL_DIR ${PROJECT_SOURCE_DIR}/externals
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${PROJECT_SOURCE_DIR}/externals
+    -DPYTHON_LIBRARIES=${PYTHON_LIBRARIES}
+    -DPYTHON_INCLUDE_DIR=${PYTHON_INCLUDE_DIRS}
+    -DPYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}
 )
 
 ExternalProject_Add(boost_numpy_eigen_external
@@ -41,7 +47,10 @@ ExternalProject_Add(boost_numpy_eigen_external
     PREFIX ${EXTERNALS_DIR}
     INSTALL_DIR ${EXTERNALS_DIR}
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNALS_DIR}
-               -DMODULE_INSTALL_PREFIX=${LIBRARY_OUTPUT_PATH}
+    -DMODULE_INSTALL_PREFIX=${LIBRARY_OUTPUT_PATH}
+    -DPYTHON_LIBRARIES=${PYTHON_LIBRARIES}
+    -DPYTHON_INCLUDE_DIR=${PYTHON_INCLUDE_DIRS}
+    -DPYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}
 )
 add_dependencies(boost_numpy_eigen_external boost_numpy_external)
 
@@ -50,7 +59,6 @@ add_dependencies(boost_numpy_eigen_external boost_numpy_external)
 ############### Configuration  Generation ###############
 
 find_package(Eigen3 REQUIRED)
-find_package(PythonLibs 2 REQUIRED)
 find_package(Boost COMPONENTS python random REQUIRED)
 find_package(OpenMP)
 
