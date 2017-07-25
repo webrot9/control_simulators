@@ -8,7 +8,7 @@ C++ control simulators featuring a Python interface and an easily extendable fra
 - OpenMP
 
 ```
-sudo apt install python-dev libboost-dev libboost-python-dev libboost-random-dev
+sudo apt install python-dev libboost-dev libboost-python-dev libboost-random-dev libboost-system-dev
 ```
 
 ## Quick Build Instructions
