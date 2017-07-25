@@ -7,6 +7,10 @@ C++ control simulators featuring a Python interface and an easily extendable fra
 - Boost python, random
 - OpenMP
 
+```
+sudo apt install python-dev libboost-dev libboost-python-dev libboost-random-dev
+```
+
 ## Quick Build Instructions
 Go to the directory where you want to clone this repositorty and run:
 ```
