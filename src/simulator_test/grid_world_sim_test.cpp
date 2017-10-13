@@ -28,6 +28,12 @@ int main(int argc, char* argv[]) {
   occupied_cells.insert(ocell1);
   gw.setParam(GridWorld::OCCUPIED_CELLS, occupied_cells);
 
+  ConsistentVector target(2);
+  target << 2, 5;
+  std::vector<ConsistentVector> atargets =
+      std::vector<ConsistentVector>(1, target);
+  gw.setParam(GridWorld::AGENT_TARGET, atargets);
+
   float dt = 1;
 
   std::cout << "GW:" << std::endl;

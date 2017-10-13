@@ -97,6 +97,7 @@ void GridWorld::vis(const ConsistentVector &state) {
       cell << r, c;
       bool agent = false;
       bool occupied = false;
+      bool target = false;
 
       for (int s = 0; s < state.size(); s+=2) {
         if ((state.segment(s, 2) - cell).norm() == 0) {
@@ -114,10 +115,21 @@ void GridWorld::vis(const ConsistentVector &state) {
         }
       }
 
-      if (occupied) {
+      for (int g = 0; g < agent_target_.size(); ++g) {
+        if (agent_target_.at(g)(0) == r && agent_target_.at(g)(1) == c) {
+          target = true;
+          break;
+        }
+      }
+
+      if (agent && target) {
+        std::cout << "_Ag|";
+      } else if (occupied) {
         std::cout << "@@@|";
       } else if (agent) {
         std::cout << "_A_|";
+      } else if (target) {
+        std::cout << "__g|";
       } else {
         std::cout << "___|";
       }
