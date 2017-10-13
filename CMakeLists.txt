@@ -88,7 +88,7 @@ endif (LINUX_BITNESS)
 # Linux bitness type must be either 32-BIT or 64-BIT.
 if (LINUX_BITNESS STREQUAL "")
   EXECUTE_PROCESS(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE)
-  
+
   if (${ARCHITECTURE} STREQUAL "x86_64")
     message("No linux bitness type specified. Detected 64-bit architecture, forcing to 64-bit bitness compilation.")
     set(LINUX_BITNESS "64-BIT" CACHE STRING "" FORCE)
@@ -156,7 +156,6 @@ target_link_libraries(cartpole_sim_test control_simulators)
 add_executable(grid_world_sim_test "${ControlSimTest_src}/grid_world_sim_test.cpp")
 target_link_libraries(grid_world_sim_test control_simulators)
 
-
 function(SetPythonLibParams targetname)
     set_target_properties(${targetname} PROPERTIES PREFIX "" SUFFIX ".so")
     add_dependencies(${targetname} boost_numpy_external boost_numpy_eigen_external)
@@ -164,7 +163,7 @@ function(SetPythonLibParams targetname)
 endfunction()
 # python bindings
 add_library(python_simulable SHARED ${ControlSimPython_src}/python_simulable.cpp)
-SetPythonLibParams(python_simulable) 
+SetPythonLibParams(python_simulable)
 
 #########################################################
 
@@ -180,4 +179,3 @@ install(DIRECTORY src/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/control_simul
 
 # Binaries.
 # install(TARGETS bin/ControlSim RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/control_simulators)
-
