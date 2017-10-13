@@ -3,6 +3,9 @@
 *.swp
 *.swo
 
+plot_damped.txt
+plot_nondamped.txt
+
 CMakeCache.txt
 CMakeFiles/
 *.cmake
