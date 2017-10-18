@@ -28,12 +28,13 @@ class GridWorld : public Simulable {
     AGENT_TARGET
   };
 
-  static constexpr int dim = 2;
+  static constexpr int dim = 6;
 
   // constructors
   explicit GridWorld(const ConsistentVector& state) : Simulable(state) {
     param_.resize(END);
     param_[NUM_AGENTS] = 1;
+    std::cout << "state: " << state.transpose() << " ?= " << stateSize() << std::endl;
     checkStateSize(state);
     // These are members of the parent class that must be set by the child
     ConsistentVector gs = ConsistentVector(2);
@@ -48,16 +49,22 @@ class GridWorld : public Simulable {
       {"num_agents", NUM_AGENTS},
       {"agent_target", AGENT_TARGET}
     };
+    ConsistentVector zero_cmd = ConsistentVector::Zero(2*param_[NUM_AGENTS]);
+    step(1.0, zero_cmd);
   }
   virtual ~GridWorld() {}
 
   // useful functions
+  ConsistentVector directions(const ConsistentVector &pose);
   virtual ConsistentVector step(double dt, const ConsistentVector& control) override;
+  virtual void reset() override { reset(all_states_[0]); }
+  virtual void reset(const ConsistentVector& state) override;
   void vis(const ConsistentVector &state);
 
   // setters and getters
+  int agentDim() const { return dim; }
   virtual int stateSize() const override { return param_[NUM_AGENTS]*dim; }
-  virtual int controlSize() const override { return param_[NUM_AGENTS]*dim; }
+  virtual int controlSize() const override { return param_[NUM_AGENTS]*(dim - 4); }
 
   template<typename T>
       void setParam(const std::string &name, T value) {

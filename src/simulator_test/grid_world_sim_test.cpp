@@ -5,10 +5,10 @@
 #include "../control_simulators/grid_world.h"
 
 int main(int argc, char* argv[]) {
-  ConsistentVector init_state0(2);
-  init_state0 << 0, 0;
-  ConsistentVector init_state1(2);
-  init_state1 << 1, 0;
+  ConsistentVector init_state0(6);
+  init_state0 << 0, 0, 0, 0, 0, 0;
+  ConsistentVector init_state1(6);
+  init_state1 << 1, 0, 0, 0, 0, 0;
 
   ConsistentVector control(2);
   control << 1, 1;

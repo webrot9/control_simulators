@@ -1,11 +1,92 @@
 #include "./grid_world.h"
 
+ConsistentVector GridWorld::directions(const ConsistentVector &pose) {
+  ConsistentVector dirs = ConsistentVector::Zero(4);
+  double dir_val = 10;
+
+  ConsistentVector upd(2);
+  upd << pose(0) - 1, pose(1);
+  ConsistentVector downd(2);
+  downd << pose(0) + 1, pose(1);
+  ConsistentVector leftd(2);
+  leftd << pose(0), pose(1) - 1;
+  ConsistentVector rightd(2);
+  rightd << pose(0), pose(1) + 1;
+
+  ConsistentVectorSet::iterator occupier;
+  for (occupier = occupied_cells_.begin();
+       occupier != occupied_cells_.end(); ++occupier) {
+    if ((*occupier)(0) == upd(0) && (*occupier)(1) == upd(1)) {
+      dirs(0) = dir_val;
+      continue;
+    }
+
+    if ((*occupier)(0) == downd(0) && (*occupier)(1) == downd(1)) {
+      dirs(1) = dir_val;
+      continue;
+    }
+
+    if ((*occupier)(0) == leftd(0) && (*occupier)(1) == leftd(1)) {
+      dirs(2) = dir_val;
+      continue;
+    }
+
+    if ((*occupier)(0) == rightd(0) && (*occupier)(1) == rightd(1)) {
+      dirs(3) = dir_val;
+      continue;
+    }
+  }
+
+  if (upd(0) < 0
+      || upd(0) >= grid_size_(0)
+      || upd(1) < 0
+      || upd(1) >= grid_size_(1)) {
+    dirs(0) = -1*dir_val;
+  }
+
+  if (downd(0) < 0
+      || downd(0) >= grid_size_(0)
+      || downd(1) < 0
+      || downd(1) >= grid_size_(1)) {
+    dirs(1) = -1*dir_val;
+  }
+
+  if (leftd(0) < 0
+      || leftd(0) >= grid_size_(0)
+      || leftd(1) < 0
+      || leftd(1) >= grid_size_(1)) {
+    dirs(2) = -1*dir_val;
+  }
+
+  if (rightd(0) < 0
+      || rightd(0) >= grid_size_(0)
+      || rightd(1) < 0
+      || rightd(1) >= grid_size_(1)) {
+    dirs(3) = -1*dir_val;
+  }
+  return dirs;
+}
+
+void GridWorld::reset(const ConsistentVector& state) {
+  checkStateSize(state);
+  time_ = 0.0;
+  state_ = state;
+  // reallocation guaranteed
+  std::vector<ConsistentVector>().swap(all_states_);
+  std::vector<ConsistentVector>().swap(all_controls_);
+  all_states_.push_back(state_);
+  ConsistentVector zero_cmd = ConsistentVector::Zero(2*param_[NUM_AGENTS]);
+  step(1.0, zero_cmd);
+}
+
 ConsistentVector GridWorld::step(double dt,
                                  const ConsistentVector &control) {
   checkControlSize(control);
   ConsistentVector result = state_;
+  int control_dim = 2;
 
   std::mt19937 mt(rd_());
+  std::uniform_int_distribution<> nd_cmd(0, 100);
   std::uniform_int_distribution<> int_dist(-1, 1);
 
   int steps = static_cast<int>(dt);
@@ -15,17 +96,27 @@ ConsistentVector GridWorld::step(double dt,
     std::map<ConsistentVector, int, GridWorld::cvector_cmp> next_to_agent;
 
     for (int a = 0; a < param_[NUM_AGENTS]; ++a) {
-      int delta_command_x = control(a*dim) + 0*int_dist(mt);
+      int nd_cmd_x = 0;
+      int nd_cmd_y = 0;
+      if (nd_cmd(mt) < 10) {
+        if (nd_cmd(mt)%2 == 0) {
+          nd_cmd_x = int_dist(mt);
+        } else {
+          nd_cmd_y = int_dist(mt);
+        }
+      }
+
+      int delta_command_x = control(a*control_dim) + nd_cmd_x;
       if (delta_command_x > 1) delta_command_x = 1;
       else if (delta_command_x < -1) delta_command_x = -1;
-      int delta_command_y = control(a*dim + 1) + 0*int_dist(mt);
+      int delta_command_y = control(a*control_dim + 1) + nd_cmd_y;
       if (delta_command_y > 1) delta_command_y = 1;
       else if (delta_command_y < -1) delta_command_y = -1;
 
-      ConsistentVector next(2);
-      next << state_(a*dim) + delta_command_x,
+      ConsistentVector next(control_dim);
+      next <<  state_(a*dim) + delta_command_x,
           state_(a*dim + 1) + delta_command_y;
-
+      ConsistentVector directions = ConsistentVector::Zero(4);
 
       std::map<int, ConsistentVector>::iterator collider = agent_to_next.begin();
       bool skip_loop = false;
@@ -51,7 +142,6 @@ ConsistentVector GridWorld::step(double dt,
       }
 
       ConsistentVector next = agent_to_next.at(a);
-      // std::cout << "Command: "  <<  next.transpose() << std::endl;
       // moving towards obstacles
       bool occupied = false;
       ConsistentVectorSet::iterator occupier;
@@ -63,11 +153,6 @@ ConsistentVector GridWorld::step(double dt,
         }
       }
       if (occupied) continue;
-      // if (occupied_cells_.find(next) != occupied_cells_.end()) {
-      //   // todo, does not work in vis,
-      //   // due to missing definition of ConsistentVector::operator= ?
-      //   continue;
-      // }
 
       // moving out of the gridworld
       if (next(0) >= grid_size_(0) || next(1) >= grid_size_(1)
@@ -76,6 +161,7 @@ ConsistentVector GridWorld::step(double dt,
       }
 
       result.segment(a*dim, 2) = next;
+      result.segment(a*dim + 2, 4) = directions(next);
     }
 
     state_ = result;
@@ -83,7 +169,7 @@ ConsistentVector GridWorld::step(double dt,
     all_controls_.push_back(control);
   }
 
-  return state_;
+  return  state_;
 }
 
 
@@ -98,8 +184,8 @@ void GridWorld::vis(const ConsistentVector &state) {
       bool occupied = false;
       bool target = false;
 
-      for (int s = 0; s < state.size(); s+=2) {
-        if ((state.segment(s, 2) - cell).norm() == 0) {
+      for (int s = 0; s < param_[NUM_AGENTS]; ++s) {
+        if ((state.segment(s*dim, 2) - cell).norm() == 0) {
           agent = true;
           break;
         }
