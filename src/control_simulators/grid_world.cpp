@@ -98,7 +98,7 @@ ConsistentVector GridWorld::step(double dt,
     for (int a = 0; a < param_[NUM_AGENTS]; ++a) {
       int nd_cmd_x = 0;
       int nd_cmd_y = 0;
-      if (nd_cmd(mt) < 10) {
+      if (nd_cmd(mt) < 5) {
         if (nd_cmd(mt)%2 == 0) {
           nd_cmd_x = int_dist(mt);
         } else {
