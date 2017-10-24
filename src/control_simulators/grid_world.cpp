@@ -1,7 +1,7 @@
 #include "./grid_world.h"
 
 ConsistentVector GridWorld::rndState() {
-  ConsistentVector rnd_state = ConsistentVector::Zero(grid_size_.size());
+  ConsistentVector rnd_pose = ConsistentVector::Zero(grid_size_.size());
   std::mt19937 mt(rd_());
 
   bool valid_cell = true;
@@ -9,7 +9,7 @@ ConsistentVector GridWorld::rndState() {
     valid_cell = true;
     for (int g = 0; g < grid_size_.size(); ++g) {
       std::uniform_int_distribution<> distr(0, grid_size_(g) - 1);
-      rnd_state(g) = distr(mt);
+      rnd_pose(g) = distr(mt);
     }
 
     ConsistentVectorSet::iterator occupier;
@@ -17,7 +17,7 @@ ConsistentVector GridWorld::rndState() {
          occupier != occupied_cells_.end(); ++occupier) {
       int g = 0;
       for (; g < grid_size_.size(); ++g) {
-        if ((*occupier)(g) != rnd_state(g)) break;
+        if ((*occupier)(g) != rnd_pose(g)) break;
       }
       if (g == grid_size_.size()) {
         valid_cell = false;
@@ -25,6 +25,11 @@ ConsistentVector GridWorld::rndState() {
       }
     }
   } while (!valid_cell);
+
+  ConsistentVector rnd_state = ConsistentVector::Zero(stateSize());
+  rnd_state.head(grid_size_.size()) = rnd_pose;
+  ConsistentVector dirs = directions(rnd_pose);
+  rnd_state.tail(dirs.size()) = dirs;
   return rnd_state;
 }
 
