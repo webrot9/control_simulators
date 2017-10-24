@@ -117,7 +117,7 @@ ConsistentVector GridWorld::step(double dt,
   checkControlSize(control);
   ConsistentVector result = state_;
   int control_dim = 2;
-  bool non_det = false;
+  bool non_det = true;
 
   std::mt19937 mt(rd_());
   std::uniform_int_distribution<> nd_cmd(0, 100);
