@@ -34,7 +34,7 @@ class GridWorld : public Simulable {
   explicit GridWorld(const ConsistentVector& state) : Simulable(state) {
     param_.resize(END);
     param_[NUM_AGENTS] = 1;
-    std::cout << "state: " << state.transpose() << " ?= " << stateSize() << std::endl;
+    // std::cout << "state: " << state.transpose() << " ?= " << stateSize() << std::endl;
     checkStateSize(state);
     // These are members of the parent class that must be set by the child
     ConsistentVector gs = ConsistentVector(2);
@@ -56,9 +56,11 @@ class GridWorld : public Simulable {
 
   // useful functions
   ConsistentVector directions(const ConsistentVector &pose);
-  virtual ConsistentVector step(double dt, const ConsistentVector& control) override;
+  virtual ConsistentVector step(double dt,
+                                const ConsistentVector& control) override;
   virtual void reset() override { reset(all_states_[0]); }
   virtual void reset(const ConsistentVector& state) override;
+  ConsistentVector rndState();
   void vis(const ConsistentVector &state);
 
   // setters and getters

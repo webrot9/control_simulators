@@ -1,5 +1,33 @@
 #include "./grid_world.h"
 
+ConsistentVector GridWorld::rndState() {
+  ConsistentVector rnd_state = ConsistentVector::Zero(grid_size_.size());
+  std::mt19937 mt(rd_());
+
+  bool valid_cell = true;
+  do {
+    valid_cell = true;
+    for (int g = 0; g < grid_size_.size(); ++g) {
+      std::uniform_int_distribution<> distr(0, grid_size_(g) - 1);
+      rnd_state(g) = distr(mt);
+    }
+
+    ConsistentVectorSet::iterator occupier;
+    for (occupier = occupied_cells_.begin();
+         occupier != occupied_cells_.end(); ++occupier) {
+      int g = 0;
+      for (; g < grid_size_.size(); ++g) {
+        if ((*occupier)(g) != rnd_state(g)) break;
+      }
+      if (g == grid_size_.size()) {
+        valid_cell = false;
+        break;
+      }
+    }
+  } while (!valid_cell);
+  return rnd_state;
+}
+
 ConsistentVector GridWorld::directions(const ConsistentVector &pose) {
   ConsistentVector dirs = ConsistentVector::Zero(4);
   double dir_val = 10;
@@ -84,6 +112,7 @@ ConsistentVector GridWorld::step(double dt,
   checkControlSize(control);
   ConsistentVector result = state_;
   int control_dim = 2;
+  bool non_det = false;
 
   std::mt19937 mt(rd_());
   std::uniform_int_distribution<> nd_cmd(0, 100);
@@ -98,7 +127,7 @@ ConsistentVector GridWorld::step(double dt,
     for (int a = 0; a < param_[NUM_AGENTS]; ++a) {
       int nd_cmd_x = 0;
       int nd_cmd_y = 0;
-      if (nd_cmd(mt) < 5) {
+      if (non_det && nd_cmd(mt) < 5) {
         if (nd_cmd(mt)%2 == 0) {
           nd_cmd_x = int_dist(mt);
         } else {

@@ -46,6 +46,8 @@ int main(int argc, char* argv[]) {
   std::cout << "State: [" << gw.state().transpose() << "] at time " <<  gw.time() << std::endl;
   gw.vis(gw.state());
 
+  std::cout << "Rand state test: " << gw.rndState().transpose() << std::endl;
+
   // std::ofstream file;
   // file.open("./plot_damped.txt");
   // std::vector<ConsistentVector> states = gw.allStates();
