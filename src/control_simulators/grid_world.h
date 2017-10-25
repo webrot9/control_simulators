@@ -94,13 +94,13 @@ class GridWorld : public Simulable {
   }
 
   template<typename T>
-      T getParam(const std::string &name) {
+      T& getParam(const std::string &name) {
     const size_t indx = param_names_.at(name);
     return getParam<T>(indx);
   }
 
   template<typename T>
-      T getParam(size_t index) {
+      T& getParam(size_t index) {
     void* datum = nullptr;
 
     if (index == AGENT_TARGET) {
