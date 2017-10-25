@@ -1,3 +1,5 @@
+// *Copyright
+
 #include "./grid_world.h"
 
 ConsistentVector GridWorld::rndState() {
@@ -129,6 +131,8 @@ ConsistentVector GridWorld::step(double dt,
     std::map<int, ConsistentVector> agent_to_next;
     std::map<ConsistentVector, int, GridWorld::cvector_cmp> next_to_agent;
 
+    std::cout << "--------------------------------44444444444444-444$$$" << std::endl;
+    std::cout << walls_ << std::endl;
     for (int a = 0; a < param_[NUM_AGENTS]; ++a) {
       int nd_cmd_x = 0;
       int nd_cmd_y = 0;
@@ -152,7 +156,8 @@ ConsistentVector GridWorld::step(double dt,
           state_(a*dim + 1) + delta_command_y;
       ConsistentVector directions = ConsistentVector::Zero(4);
 
-      std::map<int, ConsistentVector>::iterator collider = agent_to_next.begin();
+      std::map<int, ConsistentVector>::iterator collider =
+          agent_to_next.begin();
       bool skip_loop = false;
       for (; collider != agent_to_next.end(); ++collider) {
         if (collider->second(0) == next(0)
@@ -160,7 +165,6 @@ ConsistentVector GridWorld::step(double dt,
           skip_loop = true;
           break;
         }
-
       }
       if (skip_loop) {
         continue;
@@ -176,6 +180,20 @@ ConsistentVector GridWorld::step(double dt,
       }
 
       ConsistentVector next = agent_to_next.at(a);
+
+      bool wall = false;
+      for (int w = 0; w < walls_.rows(); ++w) {
+        bool s1 = (result.segment(a*dim, 2)
+                   - walls_.row(w).head(2)).norm() == 0;
+        bool s2 = (next
+                   - walls_.row(w).tail(2)).norm() == 0;
+        if (s1 && s2) {
+          wall = true;
+          break;
+        }
+      }
+      if (wall) continue;
+
       // moving towards obstacles
       bool occupied = false;
       ConsistentVectorSet::iterator occupier;

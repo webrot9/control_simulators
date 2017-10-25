@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <cmath>
 #include <fstream>
@@ -11,7 +12,7 @@ int main(int argc, char* argv[]) {
   init_state1 << 1, 0, 0, 0, 0, 0;
 
   ConsistentVector control(2);
-  control << 1, 1;
+  control << 0, 1;
   ConsistentVector grid_sz(2);
   grid_sz << 3, 10;
 
@@ -26,7 +27,13 @@ int main(int argc, char* argv[]) {
   GridWorld::ConsistentVectorSet occupied_cells;
   occupied_cells.insert(ocell0);
   occupied_cells.insert(ocell1);
-  gw.setParam(GridWorld::OCCUPIED_CELLS, occupied_cells);
+  //gw.setParam(GridWorld::OCCUPIED_CELLS, occupied_cells);
+
+
+  Eigen::MatrixXd walls = Eigen::MatrixXd::Zero(2, 4);
+  walls.row(0) << 0, 0, 0, 1;
+  walls.row(1) << 1, 0, 1, 1;
+  gw.setParam(GridWorld::WALLS, walls);
 
   ConsistentVector target(2);
   target << 2, 5;
