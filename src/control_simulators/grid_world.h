@@ -64,6 +64,7 @@ class GridWorld : public Simulable {
   void vis(const ConsistentVector &state);
 
   // setters and getters
+  int numAgents() const { return param_[NUM_AGENTS]; }
   int agentDim() const { return dim; }
   virtual int stateSize() const override { return param_[NUM_AGENTS]*dim; }
   virtual int controlSize() const override { return param_[NUM_AGENTS]*(dim - 4); }

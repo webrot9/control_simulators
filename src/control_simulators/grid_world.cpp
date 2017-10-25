@@ -50,22 +50,22 @@ ConsistentVector GridWorld::directions(const ConsistentVector &pose) {
   for (occupier = occupied_cells_.begin();
        occupier != occupied_cells_.end(); ++occupier) {
     if ((*occupier)(0) == upd(0) && (*occupier)(1) == upd(1)) {
-      dirs(0) = dir_val;
+      dirs(0) = -dir_val;
       continue;
     }
 
     if ((*occupier)(0) == downd(0) && (*occupier)(1) == downd(1)) {
-      dirs(1) = dir_val;
+      dirs(1) = -dir_val;
       continue;
     }
 
     if ((*occupier)(0) == leftd(0) && (*occupier)(1) == leftd(1)) {
-      dirs(2) = dir_val;
+      dirs(2) = -dir_val;
       continue;
     }
 
     if ((*occupier)(0) == rightd(0) && (*occupier)(1) == rightd(1)) {
-      dirs(3) = dir_val;
+      dirs(3) = -dir_val;
       continue;
     }
   }
@@ -74,28 +74,28 @@ ConsistentVector GridWorld::directions(const ConsistentVector &pose) {
       || upd(0) >= grid_size_(0)
       || upd(1) < 0
       || upd(1) >= grid_size_(1)) {
-    dirs(0) = -1*dir_val;
+    dirs(0) = -dir_val;
   }
 
   if (downd(0) < 0
       || downd(0) >= grid_size_(0)
       || downd(1) < 0
       || downd(1) >= grid_size_(1)) {
-    dirs(1) = -1*dir_val;
+    dirs(1) = -dir_val;
   }
 
   if (leftd(0) < 0
       || leftd(0) >= grid_size_(0)
       || leftd(1) < 0
       || leftd(1) >= grid_size_(1)) {
-    dirs(2) = -1*dir_val;
+    dirs(2) = -dir_val;
   }
 
   if (rightd(0) < 0
       || rightd(0) >= grid_size_(0)
       || rightd(1) < 0
       || rightd(1) >= grid_size_(1)) {
-    dirs(3) = -1*dir_val;
+    dirs(3) = -dir_val;
   }
   return dirs;
 }
@@ -205,7 +205,6 @@ ConsistentVector GridWorld::step(double dt,
 
   return  state_;
 }
-
 
 void GridWorld::vis(const ConsistentVector &state) {
   if (grid_size_.size() > 2) return;
