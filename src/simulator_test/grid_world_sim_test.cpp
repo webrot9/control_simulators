@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
   gw.setParam(GridWorld::GRID_SIZE, grid_sz);
 
   ConsistentVector ocell0(2);
-  ocell0 << 1, 3;
+  ocell0 << 1, 4;
   ConsistentVector ocell1(2);
   ocell1 << 0, 3;
 
@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
       std::vector<ConsistentVector>(1, target);
   gw.setParam(GridWorld::AGENT_TARGET, atargets);
 
-  float dt = 1;
+  float dt = 3;
 
   std::cout << "GW:" << std::endl;
   std::cout << "State size: " << gw.stateSize() << std::endl;
