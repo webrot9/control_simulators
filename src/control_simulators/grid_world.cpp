@@ -49,22 +49,18 @@ ConsistentVector GridWorld::directions(const ConsistentVector &pose) {
   rightd << pose(0), pose(1) + 1;
 
   for (int w = 0; w < walls_.rows(); ++w) {
-    if ((pose - walls_.row(w).head(2)).sum() == 0.0) {
-      if ((upd - walls_.row(w).tail(2)).sum() == 0.0) {
+    if (pose(0) == walls_.row(w)(0) && pose(1) == walls_.row(w)(1)) {
+      if (upd(0) == walls_.row(w)(2) && upd(1) == walls_.row(w)(3)) {
         dirs(0) = -dir_val;
-        continue;
       }
-      if ((downd - walls_.row(w).tail(2)).sum() == 0.0) {
+      if (downd(0) == walls_.row(w)(2) && downd(1) == walls_.row(w)(3)) {
         dirs(1) = -dir_val;
-        continue;
       }
-      if ((leftd - walls_.row(w).tail(2)).sum() == 0.0) {
+      if (leftd(0) == walls_.row(w)(2) && leftd(1) == walls_.row(w)(3)) {
         dirs(2) = -dir_val;
-        continue;
       }
-      if ((rightd - walls_.row(w).tail(2)).sum() == 0.0) {
+      if (rightd(0) == walls_.row(w)(2) && rightd(1) == walls_.row(w)(3)) {
         dirs(3) = -dir_val;
-        continue;
       }
     }
   }
@@ -72,22 +68,22 @@ ConsistentVector GridWorld::directions(const ConsistentVector &pose) {
   ConsistentVectorSet::iterator occupier;
   for (occupier = occupied_cells_.begin();
        occupier != occupied_cells_.end(); ++occupier) {
-    if ((upd - (*occupier)).sum() == 0.0) {
+    if (upd(0) == (*occupier)(0) && upd(1) == (*occupier)(1)) {
       dirs(0) = -dir_val;
       continue;
     }
 
-    if ((downd - (*occupier)).sum() == 0.0) {
+    if (downd(0) == (*occupier)(0) && downd(1) == (*occupier)(1)) {
       dirs(1) = -dir_val;
       continue;
     }
 
-    if ((leftd - (*occupier)).sum() == 0.0) {
+    if (leftd(0) == (*occupier)(0) && leftd(1) == (*occupier)(1)) {
       dirs(2) = -dir_val;
       continue;
     }
 
-    if ((rightd - (*occupier)).sum() == 0.0) {
+    if (rightd(0) == (*occupier)(0) && rightd(1) == (*occupier)(1)) {
       dirs(3) = -dir_val;
     }
   }
