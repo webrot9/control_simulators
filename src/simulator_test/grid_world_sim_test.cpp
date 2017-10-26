@@ -11,37 +11,27 @@ int main(int argc, char* argv[]) {
   ConsistentVector init_state1(6);
   init_state1 << 1, 0, 0, 0, 0, 0;
 
+  float dt = 3;
   ConsistentVector control(2);
   control << 0, 1;
   ConsistentVector grid_sz(2);
   grid_sz << 3, 10;
 
-  GridWorld gw(init_state0);
-  gw.setParam(GridWorld::GRID_SIZE, grid_sz);
-
-  ConsistentVector ocell0(2);
-  ocell0 << 1, 4;
-  ConsistentVector ocell1(2);
-  ocell1 << 0, 3;
-
-  GridWorld::ConsistentVectorSet occupied_cells;
-  occupied_cells.insert(ocell0);
-  occupied_cells.insert(ocell1);
-  gw.setParam(GridWorld::OCCUPIED_CELLS, occupied_cells);
+  Eigen::MatrixXd occupied = Eigen::MatrixXd(2, 2);
+  occupied << 1, 4, 0, 3;
 
   Eigen::MatrixXd walls = Eigen::MatrixXd::Zero(2, 4);
   walls.row(0) << 0, 0, 0, 1;
   walls.row(1) << 1, 0, 2, 0;
-  gw.setParam(GridWorld::WALLS, walls);
 
-  ConsistentVector target(2);
+  Eigen::MatrixXd target = Eigen::MatrixXd::Zero(1, 2);
   target << 2, 5;
-  std::vector<ConsistentVector> atargets =
-      std::vector<ConsistentVector>(1, target);
-  gw.setParam(GridWorld::AGENT_TARGET, atargets);
 
-  // initializes walls and occupied cells in the state
-  float dt = 3;
+  GridWorld gw(init_state0);
+  gw.setParam(GridWorld::GRID_SIZE, grid_sz);
+  gw.setParam(GridWorld::OCCUPIED_CELLS, occupied);
+  gw.setParam(GridWorld::WALLS, walls);
+  gw.setParam(GridWorld::AGENT_TARGET, target);
 
   std::cout << "GW:" << std::endl;
   std::cout << "State size: " << gw.stateSize() << std::endl;

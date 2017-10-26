@@ -14,9 +14,10 @@
 // GridWorld state is: position of agents and targets
 
 class GridWorld : public Simulable {
- public:
+public:
   struct cvector_cmp {
-    bool operator()(const ConsistentVector &a, const ConsistentVector &b) {
+    bool operator()(const ConsistentVector &a,
+                    const ConsistentVector &b) {
       return a(0) <= b(0) && a(1) <= b(1);
     }
   };
@@ -33,21 +34,20 @@ class GridWorld : public Simulable {
   };
 
   static constexpr int dim = 6;
+  static constexpr int control_dim = 2;
 
   // constructors
   explicit GridWorld(const ConsistentVector& state) : Simulable(state) {
     param_.resize(END);
     param_[NUM_AGENTS] = 1;
     checkStateSize(state);
-    // These are members of the parent class that must be set by the child
-    ConsistentVector gs = ConsistentVector(2);
-    gs << 4, 4;
+
+    ConsistentVector gs = 4*ConsistentVector::Ones(2);
     setParam(GRID_SIZE, gs);
-    setParam(OCCUPIED_CELLS, ConsistentVectorSet());
+    setParam(OCCUPIED_CELLS, Eigen::MatrixXd::Zero(1, 1));
     setParam(WALLS, Eigen::MatrixXd::Zero(1, 1));
-    ConsistentVector init_targets = 0.5*grid_size_;
-    setParam(AGENT_TARGET,
-             std::vector<ConsistentVector>(param_[NUM_AGENTS], init_targets));
+    setParam(AGENT_TARGET, Eigen::MatrixXd::Zero(1, 1));
+
     param_names_ = {
       {"grid_size", GRID_SIZE},
       {"occupied_cells", OCCUPIED_CELLS},
@@ -73,68 +73,48 @@ class GridWorld : public Simulable {
   int numAgents() const { return param_[NUM_AGENTS]; }
   int agentDim() const { return dim; }
   int stateSize() const override { return param_[NUM_AGENTS]*dim; }
-  int controlSize() const override { return param_[NUM_AGENTS]*(dim - 4); }
+  int controlSize() const override { return param_[NUM_AGENTS]*control_dim; }
 
-  template<typename T>
-      void setParam(const std::string &name, T value) {
+  void setParam(const std::string &name, Eigen::MatrixXd value) {
     const size_t indx = param_names_.at(name);
     setParam(indx, value);
   }
 
-  /* void setParam(size_t index, ConsistentVector value) { */
-  /*   if (index == GRID_SIZE) { */
-  /*     grid_size_ = value; */
-  /*   } */
-  /* } */
-
-  void setParam(size_t index, ConsistentVectorSet value) {
-    if (index == OCCUPIED_CELLS) {
+  virtual void setParam(size_t index, Eigen::MatrixXd value) {
+    if (index == GRID_SIZE) {
+      grid_size_ = value;
+    } else if (index == OCCUPIED_CELLS) {
       occupied_cells_ = value;
-    }
-  }
-
-  void setParam(size_t index, std::vector<ConsistentVector> value) {
-    if (index == AGENT_TARGET) {
+    } else if (index == WALLS) {
+      walls_ = value;
+    }  else if (index == AGENT_TARGET) {
       agent_target_ = value;
     }
   }
 
-  void setParam(size_t index, Eigen::MatrixXd value) {
-    if (index == WALLS) {
-      walls_ = value;
-    } else if (index == GRID_SIZE) {
-      grid_size_ = value;
-    }
-  }
-
-  template<typename T>
-      T& getParam(const std::string &name) {
+  Eigen::MatrixXd getParam(const std::string &name) {
     const size_t indx = param_names_.at(name);
-    return getParam<T>(indx);
+    return getParam(indx);
   }
 
-  template<typename T>
-      T& getParam(size_t index) {
-    void* datum = nullptr;
-
+  Eigen::MatrixXd getParam(size_t index) {
     if (index == AGENT_TARGET) {
-      datum = static_cast<void*>(&agent_target_);
+      return agent_target_;
     } else if (index == OCCUPIED_CELLS) {
-      datum = static_cast<void*>(&occupied_cells_);
+      return occupied_cells_;
     } else if (index == WALLS) {
-      datum = static_cast<void*>(&walls_);
+      return walls_;
     } else if (index == GRID_SIZE) {
-      datum = static_cast<void*>(&grid_size_);
+      return grid_size_;
     }
-
-    T* value = static_cast<T*>(datum);
-    return *value;
+    return Eigen::MatrixXd::Zero(1, 1);
   }
 
+protected:
   ConsistentVector grid_size_;
-  ConsistentVectorSet occupied_cells_;
+  Eigen::MatrixXd occupied_cells_;
   Eigen::MatrixXd walls_;
-  std::vector<ConsistentVector> agent_target_;
+  Eigen::MatrixXd agent_target_;
   std::random_device rd_;
 };
 

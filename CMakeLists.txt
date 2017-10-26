@@ -156,6 +156,9 @@ target_link_libraries(cartpole_sim_test control_simulators)
 add_executable(grid_world_sim_test "${ControlSimTest_src}/grid_world_sim_test.cpp")
 target_link_libraries(grid_world_sim_test control_simulators)
 
+add_executable(grid_world_taxi_sim_test "${ControlSimTest_src}/grid_world_taxi_sim_test.cpp")
+target_link_libraries(grid_world_taxi_sim_test control_simulators)
+
 function(SetPythonLibParams targetname)
     set_target_properties(${targetname} PROPERTIES PREFIX "" SUFFIX ".so")
     add_dependencies(${targetname} boost_numpy_external boost_numpy_eigen_external)
