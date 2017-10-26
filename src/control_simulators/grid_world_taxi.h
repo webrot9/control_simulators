@@ -14,27 +14,35 @@
 
 class GridWorldTaxi : public GridWorld {
  public:
-
   enum ParamIndex {
     NUM_AGENTS = 0,
     END,
     GRID_SIZE,
     OCCUPIED_CELLS,
     WALLS,
-    PASSENGERS,
-    AGENT_TARGET
+    AGENT_TARGET,
+    PASSENGERS
   };
-  static constexpr int dim = 7;
-  static constexpr int control_dim = 3;
 
   // constructors
-  explicit GridWorldTaxi(const ConsistentVector& state) : GridWorld(state) {}
+  explicit GridWorldTaxi(const ConsistentVector& state)
+      : GridWorld(state, 7, 3) {
+    setParam(PASSENGERS, Eigen::MatrixXd::Zero(1, 1));
+    param_names_ = {
+      {"grid_size", GRID_SIZE},
+      {"occupied_cells", OCCUPIED_CELLS},
+      {"walls", WALLS},
+      {"num_agents", NUM_AGENTS},
+      {"agent_target", AGENT_TARGET},
+      {"passengers", PASSENGERS}
+    };
+  }
   virtual ~GridWorldTaxi() {}
 
   // not so-useful functions
-  int agentDim() const { return dim; }
-  int stateSize() const override { return param_[NUM_AGENTS]*dim; }
-  int controlSize() const override { return param_[NUM_AGENTS]*control_dim; }
+  int agentDim() const { return dim_; }
+  virtual int stateSize() const { return param_[NUM_AGENTS]*dim_; }
+  virtual int controlSize() const { return param_[NUM_AGENTS]*control_dim_; }
 
   // useful functions
   ConsistentVector step(double dt,

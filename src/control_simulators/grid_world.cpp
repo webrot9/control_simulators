@@ -128,15 +128,14 @@ void GridWorld::reset(const ConsistentVector& state) {
   std::vector<ConsistentVector>().swap(all_controls_);
   all_states_.push_back(state_);
   ConsistentVector zero_cmd =
-      ConsistentVector::Zero(control_dim*param_[NUM_AGENTS]);
+      ConsistentVector::Zero(control_dim_*param_[NUM_AGENTS]);
   step(1.0, zero_cmd);
 }
 
-ConsistentVector GridWorld::step(double dt,
-                                 const ConsistentVector &control) {
+void GridWorld::move(double dt, const ConsistentVector &control) {
   checkControlSize(control);
   ConsistentVector result = state_;
-  bool non_det = true;
+  bool non_det = false;
 
   std::mt19937 mt(rd_());
   std::uniform_int_distribution<> nd_cmd(0, 100);
@@ -159,17 +158,16 @@ ConsistentVector GridWorld::step(double dt,
         }
       }
 
-      int delta_command_x = control(a*control_dim) + nd_cmd_x;
+      int delta_command_x = control(a*control_dim_) + nd_cmd_x;
       if (delta_command_x > 1) delta_command_x = 1;
       else if (delta_command_x < -1) delta_command_x = -1;
-      int delta_command_y = control(a*control_dim + 1) + nd_cmd_y;
+      int delta_command_y = control(a*control_dim_ + 1) + nd_cmd_y;
       if (delta_command_y > 1) delta_command_y = 1;
       else if (delta_command_y < -1) delta_command_y = -1;
 
-      ConsistentVector next(control_dim);
-      next <<  state_(a*dim) + delta_command_x,
-          state_(a*dim + 1) + delta_command_y;
-      ConsistentVector directions = ConsistentVector::Zero(4);
+      ConsistentVector next(control_dim_);
+      next << state_(a*dim_) + delta_command_x,
+          state_(a*dim_ + 1) + delta_command_y;
 
       std::map<int, ConsistentVector>::iterator collider =
           agent_to_next.begin();
@@ -181,6 +179,7 @@ ConsistentVector GridWorld::step(double dt,
           break;
         }
       }
+
       if (skip_loop) {
         continue;
       } else  {
@@ -198,10 +197,12 @@ ConsistentVector GridWorld::step(double dt,
 
       bool wall = false;
       for (int w = 0; w < walls_.rows(); ++w) {
-        bool s1 = (result.segment(a*dim, 2)
-                   - walls_.row(w).head(2)).norm() == 0;
-        bool s2 = (next
-                   - walls_.row(w).tail(2)).norm() == 0;
+        bool s1 = (result.segment(a*dim_, grid_size_.size())
+                   - walls_.row(w)
+                   .head(grid_size_.size()).transpose()).norm() == 0;
+        bool s2 = (next.head(grid_size_.size())
+                   - walls_.row(w)
+                   .tail(grid_size_.size()).transpose()).norm() == 0;
         if (s1 && s2) {
           wall = true;
           break;
@@ -225,15 +226,21 @@ ConsistentVector GridWorld::step(double dt,
           || next(0) < 0 || next(1) < 0) {
         continue;
       }
-      result.segment(a*dim, 2) = next;
-      result.segment(a*dim + 2, 4) = directions(next);
+
+      result.segment(a*dim_, grid_size_.size()) = next;
+      result.segment(a*dim_ + grid_size_.size(), 4) = directions(next);
     }
     state_ = result;
-    all_states_.push_back(state_);
-    all_controls_.push_back(control);
   }
+}
 
-  return  state_;
+
+ConsistentVector GridWorld::step(double dt,
+                                 const ConsistentVector &control) {
+  move(dt, control);
+  all_states_.push_back(state_);  // todo bug fix
+  all_controls_.push_back(control);  // todo bug fix :: appends only last command
+  return state_;
 }
 
 void GridWorld::vis(const ConsistentVector &state) {
@@ -248,7 +255,7 @@ void GridWorld::vis(const ConsistentVector &state) {
 
       // agent
       for (int s = 0; s < param_[NUM_AGENTS]; ++s) {
-        if ((state.segment(s*dim, 2) - cell).norm() == 0) {
+        if ((state.segment(s*dim_, 2) - cell).norm() == 0) {
           agent = true;
           break;
         }
@@ -275,7 +282,8 @@ void GridWorld::vis(const ConsistentVector &state) {
       bool side_wall = false;
       bool bottom_wall = false;
       for (int w = 0; w < walls_.rows(); ++w) {
-        ConsistentVector wall_diff = walls_.row(w).head(2) - walls_.row(w).tail(2);
+        ConsistentVector wall_diff =
+            walls_.row(w).head(2) - walls_.row(w).tail(2);
         if ((cell - walls_.row(w).head(2).transpose()).norm() == 0.0) {
           if (wall_diff(1) < 0) {
             side_wall = true;

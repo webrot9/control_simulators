@@ -6,7 +6,7 @@
 int Simulable::simulable_counter_ = 0;
 
 namespace {
-  static const double RK4_INTEGRATION_CONSTANT = 1.0/6.0;
+static const double RK4_INTEGRATION_CONSTANT = 1.0/6.0;
 }
 
 void Simulable::reset(const ConsistentVector& state) {
@@ -27,8 +27,8 @@ ConsistentVector Simulable::step(double dt, const ConsistentVector& control) {
   const auto &cov = gaussian_noise_.getCovariance();
   bool zero_noise = cov.trace() <=  1e-12;
   if (!zero_noise) {
-      const auto noise = gaussian_noise_.sample();
-      result += noise;
+    const auto noise = gaussian_noise_.sample();
+    result += noise;
   }
 
   state_ = result;
@@ -39,8 +39,8 @@ ConsistentVector Simulable::step(double dt, const ConsistentVector& control) {
 }
 
 ConsistentVector Simulable::transition(double& time, double dt,
-				       const ConsistentVector& state,
-				       const ConsistentVector& control) const {
+                                       const ConsistentVector& state,
+                                       const ConsistentVector& control) const {
   checkStateSize(state);
   checkControlSize(control);
   ConsistentVector result;
@@ -50,10 +50,11 @@ ConsistentVector Simulable::transition(double& time, double dt,
   int num_steps = static_cast<int>(std::ceil(dt/integration_dt));
 
   if (integration_dt > min_integration_dt_) {
-      // Since we are above the min integration point, compute how many integration steps we should
-      // take in order to be at least at the min dt or lower dt
-      num_steps = static_cast<int>(std::ceil(dt/min_integration_dt_));
-      integration_dt = dt/static_cast<double>(num_steps);
+    // Since we are above the min integration point,
+    // compute how many integration steps we should
+    // take in order to be at least at the min dt or lower dt
+    num_steps = static_cast<int>(std::ceil(dt/min_integration_dt_));
+    integration_dt = dt/static_cast<double>(num_steps);
   }
 
   result = state;
@@ -66,18 +67,21 @@ ConsistentVector Simulable::transition(double& time, double dt,
 }
 
 ConsistentVector Simulable::rk4(double& time, double dt,
-				const ConsistentVector& state,
-				const ConsistentVector& control) const {
+                                const ConsistentVector& state,
+                                const ConsistentVector& control) const {
   // Formula from: http://mathworld.wolfram.com/Runge-KuttaMethod.html
   checkStateSize(state);
   checkControlSize(control);
   const ConsistentVector& k1 = dynamics(time, state, control);
-  const ConsistentVector& k2 = dynamics(time + 0.5*dt, state + 0.5*dt*k1, control);
-  const ConsistentVector& k3 = dynamics(time + 0.5*dt, state + 0.5*dt*k2, control);
+  const ConsistentVector& k2 =
+      dynamics(time + 0.5*dt, state + 0.5*dt*k1, control);
+  const ConsistentVector& k3 =
+      dynamics(time + 0.5*dt, state + 0.5*dt*k2, control);
   const ConsistentVector& k4 = dynamics(time + dt, state + dt*k3, control);
 
   time += dt;
-  ConsistentVector result = state + RK4_INTEGRATION_CONSTANT*dt*(k1 + 2.0*(k2 + k3) + k4);
+  ConsistentVector result =
+      state + RK4_INTEGRATION_CONSTANT*dt*(k1 + 2.0*(k2 + k3) + k4);
 
   return result;
 }
@@ -98,8 +102,8 @@ std::vector<std::string> Simulable::paramNames() {
   std::vector<std::string> names(param_names_.size());
   size_t i = 0;
   for (const auto &item : param_names_) {
-      names[i] = item.first;
-      ++i;
+    names[i] = item.first;
+    ++i;
   }
   return names;
 }

@@ -14,7 +14,7 @@
 // GridWorld state is: position of agents and targets
 
 class GridWorld : public Simulable {
-public:
+ public:
   struct cvector_cmp {
     bool operator()(const ConsistentVector &a,
                     const ConsistentVector &b) {
@@ -33,11 +33,10 @@ public:
     AGENT_TARGET
   };
 
-  static constexpr int dim = 6;
-  static constexpr int control_dim = 2;
-
   // constructors
-  explicit GridWorld(const ConsistentVector& state) : Simulable(state) {
+  explicit GridWorld(const ConsistentVector& state,
+                     int dim = 6, int control_dim = 2)
+      : Simulable(state), dim_(dim), control_dim_(control_dim) {
     param_.resize(END);
     param_[NUM_AGENTS] = 1;
     checkStateSize(state);
@@ -55,13 +54,15 @@ public:
       {"num_agents", NUM_AGENTS},
       {"agent_target", AGENT_TARGET}
     };
-    ConsistentVector zero_cmd = ConsistentVector::Zero(2*param_[NUM_AGENTS]);
+    ConsistentVector zero_cmd =
+        ConsistentVector::Zero(control_dim_*param_[NUM_AGENTS]);
     step(1.0, zero_cmd);
   }
   virtual ~GridWorld() {}
 
   // useful functions
   ConsistentVector directions(const ConsistentVector &pose);
+  void move(double dt, const ConsistentVector &control);
   ConsistentVector step(double dt,
                         const ConsistentVector& control) override;
   void reset() override { reset(all_states_[0]); }
@@ -71,9 +72,9 @@ public:
 
   // setters and getters
   int numAgents() const { return param_[NUM_AGENTS]; }
-  int agentDim() const { return dim; }
-  int stateSize() const override { return param_[NUM_AGENTS]*dim; }
-  int controlSize() const override { return param_[NUM_AGENTS]*control_dim; }
+  int agentDim() const { return dim_; }
+  virtual int stateSize() const { return param_[NUM_AGENTS]*dim_; }
+  virtual int controlSize() const { return param_[NUM_AGENTS]*control_dim_; }
 
   void setParam(const std::string &name, Eigen::MatrixXd value) {
     const size_t indx = param_names_.at(name);
@@ -110,7 +111,9 @@ public:
     return Eigen::MatrixXd::Zero(1, 1);
   }
 
-protected:
+ protected:
+  int dim_;
+  int control_dim_;
   ConsistentVector grid_size_;
   Eigen::MatrixXd occupied_cells_;
   Eigen::MatrixXd walls_;
