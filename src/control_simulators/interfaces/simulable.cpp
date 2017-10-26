@@ -29,7 +29,7 @@ ConsistentVector Simulable::step(double dt, const ConsistentVector& control) {
   if (!zero_noise) {
       const auto noise = gaussian_noise_.sample();
       result += noise;
-  } 
+  }
 
   state_ = result;
   all_states_.push_back(state_);
@@ -38,22 +38,22 @@ ConsistentVector Simulable::step(double dt, const ConsistentVector& control) {
   return state_;
 }
 
-ConsistentVector Simulable::transition(double& time, double dt, 
+ConsistentVector Simulable::transition(double& time, double dt,
 				       const ConsistentVector& state,
 				       const ConsistentVector& control) const {
   checkStateSize(state);
   checkControlSize(control);
   ConsistentVector result;
-  
+
   // integration dt to be considered based on passed in dt
-  double integration_dt = dt*integration_frequency_; 
+  double integration_dt = dt*integration_frequency_;
   int num_steps = static_cast<int>(std::ceil(dt/integration_dt));
 
   if (integration_dt > min_integration_dt_) {
-      // Since we are above the min integration point, compute how many integration steps we should 
+      // Since we are above the min integration point, compute how many integration steps we should
       // take in order to be at least at the min dt or lower dt
       num_steps = static_cast<int>(std::ceil(dt/min_integration_dt_));
-      integration_dt = dt/static_cast<double>(num_steps); 
+      integration_dt = dt/static_cast<double>(num_steps);
   }
 
   result = state;
@@ -66,9 +66,9 @@ ConsistentVector Simulable::transition(double& time, double dt,
 }
 
 ConsistentVector Simulable::rk4(double& time, double dt,
-				const ConsistentVector& state, 
+				const ConsistentVector& state,
 				const ConsistentVector& control) const {
-  // Formula from: http://mathworld.wolfram.com/Runge-KuttaMethod.html 
+  // Formula from: http://mathworld.wolfram.com/Runge-KuttaMethod.html
   checkStateSize(state);
   checkControlSize(control);
   const ConsistentVector& k1 = dynamics(time, state, control);
@@ -84,7 +84,7 @@ ConsistentVector Simulable::rk4(double& time, double dt,
 
 void Simulable::checkStateSize(const ConsistentVector& state) const {
   if (state.size() != stateSize()) {
-    throw std::runtime_error("State size must correspond.");
+    throw std::runtime_error("State size must correspond. ");
   }
 }
 
