@@ -29,7 +29,6 @@ int main(int argc, char* argv[]) {
   occupied_cells.insert(ocell1);
   gw.setParam(GridWorld::OCCUPIED_CELLS, occupied_cells);
 
-
   Eigen::MatrixXd walls = Eigen::MatrixXd::Zero(2, 4);
   walls.row(0) << 0, 0, 0, 1;
   walls.row(1) << 1, 0, 2, 0;
@@ -41,6 +40,7 @@ int main(int argc, char* argv[]) {
       std::vector<ConsistentVector>(1, target);
   gw.setParam(GridWorld::AGENT_TARGET, atargets);
 
+  // initializes walls and occupied cells in the state
   float dt = 3;
 
   std::cout << "GW:" << std::endl;
@@ -69,6 +69,7 @@ int main(int argc, char* argv[]) {
   // std::cout << std::endl;
 
   std::cout << "Resetting" << std::endl;
+
   gw.reset(init_state1);
 
   std::cout << "State: [" << gw.state().transpose() << "] at time " <<  gw.time() << std::endl;
