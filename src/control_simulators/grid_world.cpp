@@ -131,8 +131,6 @@ ConsistentVector GridWorld::step(double dt,
     std::map<int, ConsistentVector> agent_to_next;
     std::map<ConsistentVector, int, GridWorld::cvector_cmp> next_to_agent;
 
-    std::cout << "--------------------------------44444444444444-444$$$" << std::endl;
-    std::cout << walls_ << std::endl;
     for (int a = 0; a < param_[NUM_AGENTS]; ++a) {
       int nd_cmd_x = 0;
       int nd_cmd_y = 0;
@@ -226,7 +224,6 @@ ConsistentVector GridWorld::step(double dt,
 
 void GridWorld::vis(const ConsistentVector &state) {
   if (grid_size_.size() > 2) return;
-
   for (int r = 0; r < (grid_size_)(0); ++r) {
     for (int c = 0; c < (grid_size_)(1); ++c) {
       ConsistentVector cell(2);
@@ -258,16 +255,36 @@ void GridWorld::vis(const ConsistentVector &state) {
         }
       }
 
+      bool side_wall = false;
+      bool bottom_wall = false;
+      for (int w = 0; w < walls_.rows(); ++w) {
+        ConsistentVector wall_diff = walls_.row(w).head(2) - walls_.row(w).tail(2);
+        if ((cell - walls_.row(w).head(2).transpose()).norm() == 0.0) {
+          if (wall_diff(1) < 0) {
+            side_wall = true;
+          }
+          if (wall_diff(0) < 0) {
+            bottom_wall = true;
+          }
+        }
+      }
+      std::string side_separator = ":";
+      if (side_wall) side_separator = "|";
+      std::string bottom_separator = ".";
+      if (bottom_wall) bottom_separator = "_";
+
+
       if (agent && target) {
-        std::cout << "_Ag|";
+        std::cout << bottom_separator + "Ag" + side_separator;
       } else if (occupied) {
-        std::cout << "@@@|";
+        std::cout << bottom_separator + "@@" + side_separator;
       } else if (agent) {
-        std::cout << "_A_|";
+        std::cout << bottom_separator + "A" + bottom_separator + side_separator;
       } else if (target) {
-        std::cout << "__g|";
+        std::cout << bottom_separator + bottom_separator + "g" + side_separator;
       } else {
-        std::cout << "___|";
+        std::cout << bottom_separator + bottom_separator
+            + bottom_separator + side_separator;
       }
     }
     std::cout << std::endl;

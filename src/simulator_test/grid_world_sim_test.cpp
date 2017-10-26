@@ -20,19 +20,19 @@ int main(int argc, char* argv[]) {
   gw.setParam(GridWorld::GRID_SIZE, grid_sz);
 
   ConsistentVector ocell0(2);
-  ocell0 << 1, 1;
+  ocell0 << 1, 3;
   ConsistentVector ocell1(2);
-  ocell1 << 0, 1;
+  ocell1 << 0, 3;
 
   GridWorld::ConsistentVectorSet occupied_cells;
   occupied_cells.insert(ocell0);
   occupied_cells.insert(ocell1);
-  //gw.setParam(GridWorld::OCCUPIED_CELLS, occupied_cells);
+  gw.setParam(GridWorld::OCCUPIED_CELLS, occupied_cells);
 
 
   Eigen::MatrixXd walls = Eigen::MatrixXd::Zero(2, 4);
   walls.row(0) << 0, 0, 0, 1;
-  walls.row(1) << 1, 0, 1, 1;
+  walls.row(1) << 1, 0, 2, 0;
   gw.setParam(GridWorld::WALLS, walls);
 
   ConsistentVector target(2);
@@ -49,8 +49,12 @@ int main(int argc, char* argv[]) {
   std::cout << "Simulable ID: " << gw.id() << std::endl;
   std::cout << "State: [" << gw.state().transpose() << "] at time " <<  gw.time() << std::endl;
   std::cout << "Simulating for " << dt << " steps" << std::endl;
+  std::cout << "Before" << std::endl;
+  gw.vis(gw.state());
+  std::cout << "Control: " << control.transpose() << std::endl;
   gw.step(dt, control);
   std::cout << "State: [" << gw.state().transpose() << "] at time " <<  gw.time() << std::endl;
+  std::cout << "After" << std::endl;
   gw.vis(gw.state());
 
   std::cout << "Rand state test: " << gw.rndState().transpose() << std::endl;
@@ -69,8 +73,12 @@ int main(int argc, char* argv[]) {
 
   std::cout << "State: [" << gw.state().transpose() << "] at time " <<  gw.time() << std::endl;
   std::cout << "Simulating for " << dt << " steps" << std::endl;
+  std::cout << "Before" << std::endl;
+  gw.vis(gw.state());
+  std::cout << "Control: " << control.transpose() << std::endl;
   gw.step(dt, control);
   std::cout << "State: [" << gw.state().transpose() << "] at time " <<  gw.time() << std::endl;
+  std::cout << "After" << std::endl;
   gw.vis(gw.state());
 
   // file.open("./plot_nondamped.txt");
