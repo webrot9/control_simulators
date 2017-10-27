@@ -64,5 +64,8 @@ int main(int argc, char* argv[]) {
   std::cout << "State: [" << gwt.state().transpose()
             << "] at time " <<  gwt.time() << std::endl;
 
+  std::cout << "Passengers: \n"
+            << gwt.getParam(GridWorldTaxi::PASSENGERS) << std::endl;
+
   return 0;
 }

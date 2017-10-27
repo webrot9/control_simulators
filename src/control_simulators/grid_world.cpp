@@ -30,7 +30,7 @@ ConsistentVector GridWorld::rndState() {
   ConsistentVector rnd_state = ConsistentVector::Zero(stateSize());
   rnd_state.head(grid_size_.size()) = rnd_pose;
   ConsistentVector dirs = directions(rnd_pose);
-  rnd_state.tail(dirs.size()) = dirs;
+  rnd_state.segment(rnd_pose.size(), dirs.size()) = dirs;
   return rnd_state;
 }
 

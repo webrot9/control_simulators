@@ -36,11 +36,16 @@ class GridWorldTaxi : public GridWorld {
       {"agent_target", AGENT_TARGET},
       {"passengers", PASSENGERS}
     };
+
+    assignments_.insert(std::make_pair(0, 0));
   }
   virtual ~GridWorldTaxi() {}
 
   // not so-useful functions
   int agentDim() const { return dim_; }
+  void setAssignments(std::map<int, int> a) { assignments_ = a; }
+  std::map<int, int> assignments() { return assignments_; }
+  int pickValue() const { return pick_value_; }
   virtual int stateSize() const { return param_[NUM_AGENTS]*dim_; }
   virtual int controlSize() const { return param_[NUM_AGENTS]*control_dim_; }
 
@@ -65,6 +70,8 @@ class GridWorldTaxi : public GridWorld {
 
  private:
   Eigen::MatrixXd passengers_;
+  std::map<int, int> assignments_;
+  static constexpr int pick_value_ = 30;
 };
 
 #endif  // SRC_CONTROL_SIMULATORS_GRID_WORLD_TAXI_H_

@@ -73,6 +73,7 @@ class GridWorld : public Simulable {
   // setters and getters
   int numAgents() const { return param_[NUM_AGENTS]; }
   int agentDim() const { return dim_; }
+  int dirsSize() const { return 4; }
   virtual int stateSize() const { return param_[NUM_AGENTS]*dim_; }
   virtual int controlSize() const { return param_[NUM_AGENTS]*control_dim_; }
 
