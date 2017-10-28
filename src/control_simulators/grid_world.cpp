@@ -135,7 +135,7 @@ void GridWorld::reset(const ConsistentVector& state) {
 void GridWorld::move(double dt, const ConsistentVector &control) {
   checkControlSize(control);
   ConsistentVector result = state_;
-  bool non_det = false;
+  bool non_det = true;
 
   std::mt19937 mt(rd_());
   std::uniform_int_distribution<> nd_cmd(0, 100);
