@@ -34,11 +34,15 @@ int main(int argc, char* argv[]) {
   Eigen::MatrixXd passengers = Eigen::MatrixXd::Zero(1, 2);
   passengers << 1, 7;
 
+  std::map<int, int> assignments;
+  assignments.insert(std::make_pair(0, 0));
+
   GridWorldTaxi gwt(init_state0, grid_sz);
   gwt.setParam(GridWorldTaxi::OCCUPIED_CELLS, occupied);
   gwt.setParam(GridWorldTaxi::WALLS, walls);
   gwt.setParam(GridWorldTaxi::PASSENGERS, passengers);
   gwt.setParam(GridWorldTaxi::AGENT_TARGET, targets);
+  gwt.setAssignments(assignments);
 
   std::cout << "GWT:" << std::endl;
   std::cout << "State size: " << gwt.stateSize() << std::endl;
