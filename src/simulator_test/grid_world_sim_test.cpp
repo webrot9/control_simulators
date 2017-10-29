@@ -6,14 +6,18 @@
 #include "../control_simulators/grid_world.h"
 
 int main(int argc, char* argv[]) {
-  ConsistentVector init_state0(6);
-  init_state0 << 0, 0, 0, 0, 0, 0;
-  ConsistentVector init_state1(6);
-  init_state1 << 1, 0, 0, 0, 0, 0;
+  int num_agents = 2;
+  ConsistentVector init_state0(6*num_agents);
+  init_state0 << 0, 0, 0, 0, 0, 0,
+      0, 3, 0, 0, 0, 0;
+  ConsistentVector init_state1(6*num_agents);
+  init_state1 << 1, 0, 0, 0, 0, 0,
+      2, 7, 0, 0, 0, 0;
 
-  float dt = 3;
-  ConsistentVector control(2);
-  control << 0, 1;
+  float dt = 4;
+  ConsistentVector control(2*num_agents);
+  control << 0, 1,
+      1, 0;
   ConsistentVector grid_sz(2);
   grid_sz << 3, 10;
 
@@ -22,16 +26,15 @@ int main(int argc, char* argv[]) {
 
   Eigen::MatrixXd walls = Eigen::MatrixXd::Zero(2, 4);
   walls.row(0) << 0, 0, 0, 1;
-  walls.row(1) << 1, 0, 2, 0;
+  walls.row(1) << 0, 1, 0, 0;
 
   Eigen::MatrixXd target = Eigen::MatrixXd::Zero(1, 2);
   target << 2, 5;
 
-  GridWorld gw(init_state0);
-  gw.setParam(GridWorld::GRID_SIZE, grid_sz);
-  gw.setParam(GridWorld::OCCUPIED_CELLS, occupied);
-  gw.setParam(GridWorld::WALLS, walls);
+  GridWorld gw(init_state0, grid_sz, num_agents);
   gw.setParam(GridWorld::AGENT_TARGET, target);
+  //gw.setParam(GridWorld::OCCUPIED_CELLS, occupied);
+  //gw.setParam(GridWorld::WALLS, walls);
 
   std::cout << "GW:" << std::endl;
   std::cout << "State size: " << gw.stateSize() << std::endl;

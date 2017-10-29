@@ -34,8 +34,7 @@ int main(int argc, char* argv[]) {
   Eigen::MatrixXd passengers = Eigen::MatrixXd::Zero(1, 2);
   passengers << 1, 7;
 
-  GridWorldTaxi gwt(init_state0);
-  gwt.setParam(GridWorldTaxi::GRID_SIZE, grid_sz);
+  GridWorldTaxi gwt(init_state0, grid_sz);
   gwt.setParam(GridWorldTaxi::OCCUPIED_CELLS, occupied);
   gwt.setParam(GridWorldTaxi::WALLS, walls);
   gwt.setParam(GridWorldTaxi::PASSENGERS, passengers);

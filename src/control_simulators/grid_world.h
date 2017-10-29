@@ -35,14 +35,15 @@ class GridWorld : public Simulable {
 
   // constructors
   explicit GridWorld(const ConsistentVector& state,
+                     ConsistentVector grid_size = 4*ConsistentVector::Ones(2),
+                     int num_agents = 1,
                      int dim = 6, int control_dim = 2)
       : Simulable(state), dim_(dim), control_dim_(control_dim) {
     param_.resize(END);
-    param_[NUM_AGENTS] = 1;
+    param_[NUM_AGENTS] = num_agents;
     checkStateSize(state);
 
-    ConsistentVector gs = 4*ConsistentVector::Ones(2);
-    setParam(GRID_SIZE, gs);
+    setParam(GRID_SIZE, grid_size);
     setParam(OCCUPIED_CELLS, Eigen::MatrixXd::Zero(1, 1));
     setParam(WALLS, Eigen::MatrixXd::Zero(1, 1));
     setParam(AGENT_TARGET, Eigen::MatrixXd::Zero(1, 1));
@@ -54,9 +55,13 @@ class GridWorld : public Simulable {
       {"num_agents", NUM_AGENTS},
       {"agent_target", AGENT_TARGET}
     };
-    ConsistentVector zero_cmd =
-        ConsistentVector::Zero(control_dim_*param_[NUM_AGENTS]);
-    step(1.0, zero_cmd);
+
+    for (int a = 0; a < num_agents; ++a) {
+      state_.segment(a*dim_, grid_size.size()) =
+          state.segment(a*dim_, grid_size.size());
+      state_.segment(a*dim_ + grid_size.size(), dirsSize()) =
+          directions(state.segment(a*dim_, grid_size.size()));
+    }
   }
   virtual ~GridWorld() {}
 
@@ -77,7 +82,7 @@ class GridWorld : public Simulable {
   virtual int stateSize() const { return param_[NUM_AGENTS]*dim_; }
   virtual int controlSize() const { return param_[NUM_AGENTS]*control_dim_; }
 
-  void setParam(const std::string &name, Eigen::MatrixXd value) {
+  virtual void setParam(const std::string &name, Eigen::MatrixXd value) {
     const size_t indx = param_names_.at(name);
     setParam(indx, value);
   }
