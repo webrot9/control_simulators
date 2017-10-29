@@ -46,7 +46,7 @@ class GridWorld : public Simulable {
     setParam(GRID_SIZE, grid_size);
     setParam(OCCUPIED_CELLS, Eigen::MatrixXd::Zero(1, 1));
     setParam(WALLS, Eigen::MatrixXd::Zero(1, 1));
-    setParam(AGENT_TARGET, Eigen::MatrixXd::Zero(1, 1));
+    setParam(AGENT_TARGET, Eigen::MatrixXd::Zero(num_agents, 1));
 
     param_names_ = {
       {"grid_size", GRID_SIZE},

@@ -5,8 +5,6 @@
 
 ConsistentVector GridWorldTaxi::step(double dt,
                                      const ConsistentVector &control) {
-  int directions = 4;
-
   move(dt, control);
   ConsistentVector result = state_;
   for (int a = 0; a < param_[NUM_AGENTS]; ++a) {
@@ -16,16 +14,21 @@ ConsistentVector GridWorldTaxi::step(double dt,
 
     if ((agent - passenger).cwiseAbs().sum() == 0
         && control(a*control_dim_ + grid_size_.size()) == 1) {
-      result(a*dim_ + grid_size_.size() + directions) = pick_value_;
+      result(a*dim_ + grid_size_.size() + dirsSize()) = pick_value_;
 
-    } else if (result(a*dim_ + grid_size_.size() + directions) == pick_value_
+    } else if (result(a*dim_ + grid_size_.size() + dirsSize()) == pick_value_
                && (control(a*control_dim_ + grid_size_.size()) == -1)) {
-      result(a*dim_ + grid_size_.size() + directions) = 0;
+      result(a*dim_ + grid_size_.size() + dirsSize()) = 0;
     }
 
-    if (result(a*dim_ + grid_size_.size() + directions) == pick_value_) {
+    if (result(a*dim_ + grid_size_.size() + dirsSize()) == pick_value_) {
       passengers_.row(assignments_.at(a)) =
           result.segment(a*dim_, grid_size_.size());
+      result.segment(a*dim_ + grid_size_.size() + dirsSize() + 1,
+                     grid_size_.size()) = agent_target_.row(a);
+    } else {
+      result.segment(a*dim_ + grid_size_.size() + dirsSize() + 1,
+                     grid_size_.size()) = passengers_.row(assignments_.at(a));
     }
   }
 

@@ -27,7 +27,7 @@ class GridWorldTaxi : public GridWorld {
   // constructors
   explicit GridWorldTaxi(const ConsistentVector& state,
                          const ConsistentVector& grid_size)
-      : GridWorld(state, grid_size, 1, 7, 3) {
+      : GridWorld(state, grid_size, 1, 9, 3) {
     setParam(PASSENGERS, Eigen::MatrixXd::Zero(1, 1));
     param_names_ = {
       {"grid_size", GRID_SIZE},

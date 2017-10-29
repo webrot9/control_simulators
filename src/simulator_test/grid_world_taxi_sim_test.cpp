@@ -8,8 +8,8 @@
 int main(int argc, char* argv[]) {
   float dt = 1;
 
-  ConsistentVector init_state0(7);
-  init_state0 << 0, 0, 0, 0, 0, 0, 0;
+  ConsistentVector init_state0(9);
+  init_state0 << 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
   ConsistentVector move_control(3);
   move_control << 0, 1, 0;
