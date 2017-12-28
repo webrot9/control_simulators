@@ -47,7 +47,7 @@ ConsistentVector GridWorld::rndState() {
 
 ConsistentVector GridWorld::directions(const ConsistentVector &pose) {
   ConsistentVector dirs = ConsistentVector::Zero(dirsSize());
-  double dir_val = 10;
+  double dir_val = 1;
 
   std::vector<ConsistentVector> directions(
       dirsSize(), ConsistentVector::Zero(control_dim_));
