@@ -87,11 +87,7 @@ ConsistentVector GridWorld::directions(const ConsistentVector &pose) {
     }
   }
 
-  for (int a = 0; a < param_[NUM_AGENTS]; ++a) {
-    if ((state_.segment(a*dim_, grid_size_.size())
-         - pose).cwiseAbs().sum() == 0) {
-      continue;
-    }
+  for (int a = 0; (param_[NUM_AGENTS] > 1.0) && a < param_[NUM_AGENTS]; ++a) {
     for (unsigned int d = 0; d < directions.size(); ++d) {
       if ((state_.segment(a*dim_, grid_size_.size())
            - directions.at(d)).cwiseAbs().sum() == 0) {

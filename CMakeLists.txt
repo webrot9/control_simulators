@@ -162,7 +162,7 @@ target_link_libraries(grid_world_taxi_sim_test control_simulators)
 function(SetPythonLibParams targetname)
     set_target_properties(${targetname} PROPERTIES PREFIX "" SUFFIX ".so")
     add_dependencies(${targetname} boost_numpy_external boost_numpy_eigen_external)
-    target_link_libraries(${targetname} control_simulators boost_python boost_numpy ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+    target_link_libraries(${targetname} control_simulators boost_python ${Boost_LIBRARIES} ${PYTHON_LIBRARIES}) #boost_numpy
 endfunction()
 # python bindings
 add_library(python_simulable SHARED ${ControlSimPython_src}/python_simulable.cpp)
