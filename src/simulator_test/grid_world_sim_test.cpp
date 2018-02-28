@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
   init_state1 << 0, 0, 0, 0, 0, 0,
       2, 7, 0, 0, 0, 0;
 
-  float dt = 1;
+  float dt = 4;
   ConsistentVector control(2*num_agents);
   control << 1, 0, -1, 0;
   ConsistentVector grid_sz(2);
