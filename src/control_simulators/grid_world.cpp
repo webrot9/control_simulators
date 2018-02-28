@@ -56,10 +56,19 @@ ConsistentVector GridWorld::directions(const ConsistentVector &pose) {
   directions.at(2) << pose(0), pose(1) - 1;
   directions.at(3) << pose(0), pose(1) + 1;
 
-  for (int w = 0; (walls_.cols() != 1) && w < walls_.rows(); ++w) {
-    if ((pose - walls_.row(w).head(grid_size_.size())
-         .transpose()).cwiseAbs().sum() == 0) {
-      for (unsigned int d = 0; d < directions.size(); ++d) {
+  for (unsigned int d = 0; d < directions.size(); ++d) {
+    // grid size
+    if (directions.at(d)(0) < 0 || directions.at(d)(0) >= grid_size_(0)
+        || directions.at(d)(1) < 0 || directions.at(d)(1) >= grid_size_(1)) {
+      dirs(d) = -dir_val;
+      continue;
+    }
+
+
+    // Walls
+    for (int w = 0; (walls_.cols() != 1) && w < walls_.rows(); ++w) {
+      if ((pose - walls_.row(w).head(grid_size_.size())
+           .transpose()).cwiseAbs().sum() == 0) {
         if ((directions.at(d) - walls_.row(w).tail(grid_size_.size())
              .transpose()).cwiseAbs().sum() == 0) {
           dirs(d) = -dir_val;
@@ -67,28 +76,22 @@ ConsistentVector GridWorld::directions(const ConsistentVector &pose) {
         }
       }
     }
-  }
+    if (dirs(d) == -dir_val) continue;
 
-  for (int o = 0;
-       o < (occupied_cells_.cols() != 1) && occupied_cells_.rows(); ++o) {
-    for (unsigned int d = 0; d < directions.size(); ++d) {
+    // Blocks
+    for (int o = 0;
+         (occupied_cells_.cols() != 1) && o < occupied_cells_.rows(); ++o) {
       if ((directions.at(d)
            - occupied_cells_.row(o).transpose()).cwiseAbs().sum() == 0) {
         dirs(d) = -dir_val;
         break;
       }
     }
-  }
+    if (dirs(d) == -dir_val) continue;
 
-  for (unsigned int d = 0; d < directions.size(); ++d) {
-    if (directions.at(d)(0) < 0 || directions.at(d)(0) >= grid_size_(0)
-        || directions.at(d)(1) < 0 || directions.at(d)(1) >= grid_size_(1)) {
-      dirs(d) = -dir_val;
-    }
-  }
-
-  for (int a = 0; (param_[NUM_AGENTS] > 1.0) && a < param_[NUM_AGENTS]; ++a) {
-    for (unsigned int d = 0; d < directions.size(); ++d) {
+    // Agents
+    for (int a = 0; (param_[NUM_AGENTS] > 1.0) &&
+             a < param_[NUM_AGENTS]; ++a) {
       if ((state_.segment(a*dim_, grid_size_.size())
            - directions.at(d)).cwiseAbs().sum() == 0) {
         dirs(d) = -dir_val;
@@ -206,7 +209,10 @@ void GridWorld::move(double dt, const ConsistentVector &control) {
       }
 
       state_.segment(a*dim_, grid_size_.size()) = next;
-      state_.segment(a*dim_ + grid_size_.size(), dirsSize()) = directions(next);
+    }
+    for (int a = 0; a < param_[NUM_AGENTS]; ++a) {
+      state_.segment(a*dim_ + grid_size_.size(), dirsSize()) =
+          directions(state_.segment(a*dim_, grid_size_.size()));
     }
   }
 }
