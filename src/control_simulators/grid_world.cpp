@@ -208,8 +208,23 @@ void GridWorld::move(double dt, const ConsistentVector &control) {
         continue;
       }
 
+      // moving in other agents
+      bool skip = false;
+      for (int ao = 0; ao < param_[NUM_AGENTS]; ++ao) {
+        if (ao == a) continue;
+        if ((next - state_.segment(ao*dim_, grid_size_.size()))
+            .cwiseAbs().sum() == 0) {
+          skip = true;
+          break;
+        }
+      }
+      if (skip) continue;
+
       state_.segment(a*dim_, grid_size_.size()) = next;
+      state_.segment(a*dim_ + grid_size_.size(), dirsSize()) =
+                       directions(state_.segment(a*dim_, grid_size_.size()));
     }
+    // needed to update a-1 agents
     for (int a = 0; a < param_[NUM_AGENTS]; ++a) {
       state_.segment(a*dim_ + grid_size_.size(), dirsSize()) =
           directions(state_.segment(a*dim_, grid_size_.size()));
