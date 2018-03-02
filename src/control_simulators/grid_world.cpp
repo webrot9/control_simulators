@@ -131,20 +131,21 @@ void GridWorld::move(double dt, const ConsistentVector &control) {
     std::map<int, ConsistentVector> agent_to_next;
 
     for (int a = 0; a < param_[NUM_AGENTS]; ++a) {
-      int nd_cmd_x = 0;
-      int nd_cmd_y = 0;
+      int delta_command_x = control(a*control_dim_);
+      int delta_command_y = control(a*control_dim_ + 1);
       if (non_det && nd_cmd(mt) < 5) {
         if (nd_cmd(mt)%2 == 0) {
-          nd_cmd_x = int_dist(mt);
+          delta_command_x = int_dist(mt);
+          delta_command_y = 0;
         } else {
-          nd_cmd_y = int_dist(mt);
+          delta_command_x = 0;
+          delta_command_y = int_dist(mt);
         }
       }
 
-      int delta_command_x = control(a*control_dim_) + nd_cmd_x;
       if (delta_command_x > 1) delta_command_x = 1;
       else if (delta_command_x < -1) delta_command_x = -1;
-      int delta_command_y = control(a*control_dim_ + 1) + nd_cmd_y;
+
       if (delta_command_y > 1) delta_command_y = 1;
       else if (delta_command_y < -1) delta_command_y = -1;
 
@@ -175,7 +176,7 @@ void GridWorld::move(double dt, const ConsistentVector &control) {
 
       ConsistentVector next = agent_to_next.at(a);
 
-      bool wall = false;
+      bool skip = false;
       for (int w = 0; (walls_.cols() != 1) && w < walls_.rows(); ++w) {
         bool s1 = (state_.segment(a*dim_, grid_size_.size())
                    - walls_.row(w)
@@ -184,23 +185,22 @@ void GridWorld::move(double dt, const ConsistentVector &control) {
                    - walls_.row(w)
                    .tail(grid_size_.size()).transpose()).norm() == 0;
         if (s1 && s2) {
-          wall = true;
+          skip = true;
           break;
         }
       }
-      if (wall) continue;
+      if (skip) continue;
 
       // moving towards obstacles
-      bool occupied = false;
       for (int o = 0;
            (occupied_cells_.cols() != 1) && o < occupied_cells_.rows(); ++o) {
         if (occupied_cells_(o, 0) == next(0)
             && occupied_cells_(o, 1) == next(1)) {
-          occupied = true;
+          skip = true;
           break;
         }
       }
-      if (occupied) continue;
+      if (skip) continue;
 
       // moving out of the gridworld
       if (next(0) >= grid_size_(0) || next(1) >= grid_size_(1)
@@ -209,7 +209,6 @@ void GridWorld::move(double dt, const ConsistentVector &control) {
       }
 
       // moving in other agents
-      bool skip = false;
       for (int ao = 0; ao < param_[NUM_AGENTS]; ++ao) {
         if (ao == a) continue;
         if ((next - state_.segment(ao*dim_, grid_size_.size()))
