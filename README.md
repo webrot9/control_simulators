@@ -75,3 +75,6 @@ File any issues on Github (https://github.com/webrot9/control_simulators/issues)
 You are welcome to also submit pull requests with additional simulator models or other upgrades. 
 Note that your models must support licensing that will inherit whatever licensing we (Roberto Capobianco and Arun Venkatraman) choose (and may modify in the future) for this repository.
 
+## License
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
